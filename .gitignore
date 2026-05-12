@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 测试报告、截图、录屏
+reports/*
+!reports/.gitkeep
+screenshots/*
+!screenshots/.gitkeep
+videos/*
+!videos/.gitkeep
+allure-report/
+
+# 配置文件（含个人信息，使用 example 代替）
+config/config.yaml
+
+# IDE
+.idea/
+.vscode/

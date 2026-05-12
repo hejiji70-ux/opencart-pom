@@ -1,0 +1,10 @@
+# OpenCart 测试配置文件（示例）
+# 使用方法：复制为 config.yaml，并填入真实值
+base_url: "https://demo.opencart.cn/index.php"
+browser_headless: false
+timeout: 10000
+
+user:
+  first_name: "张"
+  last_name: "三"
+  password: "123456"
