@@ -1,4 +1,5 @@
 # OpenCart 电商系统 Web 自动化测试 (POM 模式)
+![CI](https://github.com/hejiji70-ux/opencart-pom/actions/workflows/test.yml/badge.svg)
 
 ## 项目简介
 基于 Python + Playwright + Pytest + Allure 的 OpenCart 电商系统 UI 自动化测试框架。
