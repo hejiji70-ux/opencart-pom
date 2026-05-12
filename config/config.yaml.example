@@ -5,6 +5,10 @@ browser_headless: false
 timeout: 10000
 
 user:
-  first_name: "张"
-  last_name: "三"
-  password: "123456"
+  - first_name: "张"
+    last_name: "三"
+    password: "123456"
+
+  - first_name: "李"
+    last_name: "四"
+    password: "123456"

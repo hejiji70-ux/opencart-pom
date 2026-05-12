@@ -18,3 +18,6 @@ config/config.yaml
 # IDE
 .idea/
 .vscode/
+
+# 测试数据传输的文件（与项目运行无关）
+./test_yaml.py

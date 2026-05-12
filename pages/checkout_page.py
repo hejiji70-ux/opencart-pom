@@ -55,30 +55,43 @@ class CheckoutPage(BasePage):
         except:
             return False
 
-    def fill_shipping_address(self, first_name="张", last_name="三",
-                              company="test", address1="测试地址123号",
-                              address2="456号", city="广州",
-                              postcode="100000"):
-        """手动填充完整的配送地址表单"""
+    def fill_shipping_address(self, address_data=None):
+        """
+        手动填充完整的配送地址表单。
+        address_data 是一个字典，包含 first_name, last_name, company, address1, address2, city, postcode。
+        如果不传，使用默认值补上
+        """
+        if address_data is None:
+            address_data = {
+                "first_name": "he",
+                "last_name": "jc",
+                "company": "test",
+                "address1": "测试地址123号",
+                "address2": "456号",
+                "city": "广州",
+                "postcode": "100000"
+            }
+
         print("检测到地址为空，开始自动填充...")
         self.wait_for_element(self.STEP_SHIPPING, timeout=15000)
 
-        self.fill(self.FIRST_NAME_INPUT, first_name)
-        self.fill(self.LAST_NAME_INPUT, last_name)
-        self.fill(self.COMPANY_INPUT, company)      # 公司选填
-        self.fill(self.ADDRESS1_INPUT, address1)
-        self.fill(self.ADDRESS2_INPUT, address2)    # 地址二选填
-        self.fill(self.CITY_INPUT, city)
-        self.fill(self.POSTCODE_INPUT, postcode)
+        # 填写姓和名（表单必填）
+        self.fill(self.FIRST_NAME_INPUT, address_data.get("first_name", ""))
+        self.fill(self.LAST_NAME_INPUT, address_data.get("last_name", ""))
+        self.fill(self.COMPANY_INPUT, address_data.get("company", ""))
+        self.fill(self.ADDRESS1_INPUT, address_data.get("address1", ""))
+        self.fill(self.ADDRESS2_INPUT, address_data.get("address2", ""))
+        self.fill(self.CITY_INPUT, address_data.get("city", ""))
+        self.fill(self.POSTCODE_INPUT, address_data.get("postcode", ""))
 
-        # 选择国家，触发地区下拉框加载
-        # 使用 select_option 方法，根据 value 属性选中 "China" (value="44")
+        # 选择国家（固定为 China，value="44"）
         self.page.select_option(self.COUNTRY_SELECT, value="44")
-        self.page.wait_for_load_state("networkidle") # 等待地区下拉框更新（网络请求）
+        self.page.wait_for_load_state("networkidle")
 
-        # 选择省/州，选中第一个可用选项 "Guangdong" (value="689")
+        # 选择省/州（固定为 Guangdong，value="689"）
         self.page.select_option(self.REGION_SELECT, value="689")
         self.page.wait_for_load_state("networkidle")
+
         # 点击"Continue"提交表单
         self.page.click(self.ADDRESS_CONTINUE_BTN)
 
@@ -125,27 +138,20 @@ class CheckoutPage(BasePage):
         # 此时按钮已可用，直接点击
         self.page.click("//button[contains(text(),'Confirm Order')]")
 
-    def complete_checkout(self):
-        """完整的结算流程，增加地址表单提交后的等待，解决弹窗问题。"""
-        # 步骤1：地址处理
+    def complete_checkout(self, address_data=None):
+        """完整的结算流程，支持传入地址数据。"""
         if not self.is_address_filled():
-            self.fill_shipping_address()
-            # 【关键】地址表单提交后，页面会刷新配送方式区域，
-            # 必须等待网络空闲和配送方式标题重新出现，才能继续操作。
+            self.fill_shipping_address(address_data)
             print("地址填充完成，等待页面更新...")
             self.page.wait_for_load_state("networkidle")
             self.wait_for_element(self.STEP_SHIPPING_METHOD, timeout=15000)
         else:
             print("检测到地址已预填，跳过填充步骤。")
-        # 步骤2：选择配送方式（必须在页面完全刷新后）
+
         self.select_shipping_method()
-        # 步骤3：选择支付方式
         self.select_payment_method()
-        # 等待页面上的支付方式单选按钮区域稳定下来
         self.page.wait_for_load_state("networkidle")
-        # 再次确保支付方式区域的标题可见（表示加载已完成）
         self.wait_for_element(self.STEP_PAYMENT_METHOD, timeout=10000)
-        # 步骤4：确认下单
         self.confirm_order()
 
     def is_order_placed(self) -> bool:

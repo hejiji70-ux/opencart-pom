@@ -2,7 +2,7 @@
 
 ## 项目简介
 基于 Python + Playwright + Pytest + Allure 的 OpenCart 电商系统 UI 自动化测试框架。
-采用 Page Object Model 设计模式，实现测试逻辑与页面元素的分离，覆盖注册、搜索、购物车、结算全链路。
+采用 Page Object Model 设计模式，实现测试逻辑与页面元素的分离，再加上数据驱动，覆盖注册、搜索、购物车、结算全链路。
 
 ## 技术栈
 - **Python 3.11**
