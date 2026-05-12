@@ -1,0 +1,45 @@
+name: OpenCart Web 自动化测试
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v3
+
+    - name: 安装 Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: 安装依赖
+      run: |
+        pip install -r requirements.txt
+
+    - name: 安装 Playwright 浏览器及其系统依赖
+      run: |
+        playwright install chromium
+        playwright install-deps chromium
+
+    - name: 创建配置文件
+      run: |
+        cp config/config.yaml.example config/config.yaml
+
+    - name: 运行测试
+      run: |
+        python run.py
+
+    - name: 上传测试报告
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-results
+        path: reports/
